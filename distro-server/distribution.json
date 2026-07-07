@@ -1,0 +1,28 @@
+{
+    "version": "1.0.0",
+    "discord": {
+        "clientId": "000000000000000000",
+        "smallImageText": "Ventrys Launcher",
+        "smallImageKey": "seal-circle"
+    },
+    "rss": "https://forum.westeroscraft.com/forum/news.2/index.rss",
+    "servers": [
+        {
+            "id": "Ventrys-Server",
+            "name": "Ventrys RP",
+            "description": "Serveur roleplay Ventrys",
+            "icon": "http://127.0.0.1:8080/files/ventryslogo.png",
+            "version": "1.0.0",
+            "address": "ventysgot.merryhost.fr:25570",
+            "minecraftVersion": "1.18.2",
+            "discord": {
+                "shortId": "Ventrys",
+                "largeImageText": "Ventrys RP",
+                "largeImageKey": "server-ventrys"
+            },
+            "mainServer": true,
+            "autoconnect": true,
+            "modules": []
+        }
+    ]
+}
