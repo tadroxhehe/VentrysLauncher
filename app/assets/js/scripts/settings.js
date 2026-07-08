@@ -122,7 +122,7 @@ function initSettingsValidators(){
 /**
  * Load configuration values onto the UI. This is an automated process.
  */
-async function initSettingsValues(){
+async function initSettingsValues(skipJavaValidation = false){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
 
     for(const v of sEls) {
@@ -139,7 +139,9 @@ async function initSettingsValues(){
                     // Special Conditions
                     if(cVal === 'JavaExecutable'){
                         v.value = gFn.apply(null, gFnOpts)
-                        await populateJavaExecDetails(v.value)
+                        if(!skipJavaValidation){
+                            await populateJavaExecDetails(v.value)
+                        }
                     } else if (cVal === 'DataDirectory'){
                         v.value = gFn.apply(null, gFnOpts)
                     } else if(cVal === 'JVMOptions'){
@@ -1611,7 +1613,7 @@ async function prepareSettings(first = false) {
     } else {
         await prepareModsTab()
     }
-    await initSettingsValues()
+    await initSettingsValues(first)
     prepareAccountsTab()
     await prepareJavaTab()
     prepareAboutTab()

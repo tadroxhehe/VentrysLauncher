@@ -9,6 +9,9 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
+const { LoggerUtil } = require('helios-core')
+
+const loggerUIBinder = LoggerUtil.getLogger('UIBinder')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -57,7 +60,39 @@ function getCurrentView(){
     return currentView
 }
 
-async function showMainUI(data){
+function revealLauncherUI() {
+    document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+    document.body.style.backgroundImage = `url('assets/images/backgrounds/fondventrys.jpg')`
+    $('#main').show()
+
+    const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
+
+    if(ConfigManager.isFirstLaunch()){
+        currentView = VIEWS.welcome
+        $(VIEWS.welcome).fadeIn(1000)
+    } else if(isLoggedIn){
+        currentView = VIEWS.landing
+        $(VIEWS.landing).fadeIn(1000)
+    } else {
+        loginOptionsCancelEnabled(false)
+        loginOptionsViewOnLoginSuccess = VIEWS.landing
+        loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+        currentView = VIEWS.loginOptions
+        $(VIEWS.loginOptions).fadeIn(1000)
+    }
+
+    setTimeout(() => {
+        $('#loadingContainer').fadeOut(500, () => {
+            $('#loadSpinnerImage').removeClass('rotating')
+        })
+    }, 250)
+
+    if(!isDev && isLoggedIn){
+        validateSelectedAccount()
+    }
+}
+
+function showMainUI(data){
 
     if(!isDev){
         const { AUTO_UPDATES_ENABLED } = require('./assets/js/ipcconstants')
@@ -67,49 +102,45 @@ async function showMainUI(data){
         }
     }
 
-    await prepareSettings(true)
-    updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
-    refreshServerStatus()
     setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/fondventrys.jpg')`
-        $('#main').show()
-
-        const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
-
-        // If this is enabled in a development environment we'll get ratelimited.
-        // The relaunch frequency is usually far too high.
-        if(!isDev && isLoggedIn){
-            validateSelectedAccount()
-        }
-
-        if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
-        } else {
-            if(isLoggedIn){
-                currentView = VIEWS.landing
-                $(VIEWS.landing).fadeIn(1000)
-            } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
+        try {
+            if(typeof updateSelectedServer === 'function'){
+                updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
             }
+            if(typeof refreshServerStatus === 'function'){
+                refreshServerStatus()
+            }
+        } catch (err) {
+            loggerUIBinder.warn('Failed to refresh landing UI during startup.', err)
         }
 
-        setTimeout(() => {
-            $('#loadingContainer').fadeOut(500, () => {
-                $('#loadSpinnerImage').removeClass('rotating')
-            })
-        }, 250)
-        
+        revealLauncherUI()
     }, 750)
-    // Disable tabbing to the news container.
-    initNews().then(() => {
-        $('#newsContainer *').attr('tabindex', '-1')
-    })
+
+    setTimeout(() => {
+        try {
+            syncModConfigurations(data)
+            ensureJavaSettings(data)
+        } catch (err) {
+            loggerUIBinder.warn('Failed to sync mod/java settings during startup.', err)
+        }
+    }, 0)
+
+    if(typeof prepareSettings === 'function'){
+        prepareSettings(true).catch(err => {
+            loggerUIBinder.warn('Settings UI preparation failed during startup.', err)
+        })
+    } else {
+        loggerUIBinder.error('prepareSettings is not defined. Settings tab may be unavailable until restart.')
+    }
+
+    if(typeof initNews === 'function'){
+        initNews().then(() => {
+            $('#newsContainer *').attr('tabindex', '-1')
+        }).catch(err => {
+            loggerUIBinder.warn('News initialization failed during startup.', err)
+        })
+    }
 }
 
 function showFatalStartupError(){
@@ -429,7 +460,7 @@ document.addEventListener('readystatechange', async () => {
             rscShouldLoad = false
             if(!fatalStartupError){
                 const data = await DistroAPI.getDistribution()
-                await showMainUI(data)
+                showMainUI(data)
             } else {
                 showFatalStartupError()
             }
@@ -442,10 +473,8 @@ document.addEventListener('readystatechange', async () => {
 ipcRenderer.on('distributionIndexDone', async (event, res) => {
     if(res) {
         const data = await DistroAPI.getDistribution()
-        syncModConfigurations(data)
-        ensureJavaSettings(data)
         if(document.readyState === 'interactive' || document.readyState === 'complete'){
-            await showMainUI(data)
+            showMainUI(data)
         } else {
             rscShouldLoad = true
         }
