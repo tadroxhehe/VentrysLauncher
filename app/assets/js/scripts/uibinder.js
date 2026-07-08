@@ -9,7 +9,6 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
-const { LoggerUtil } = require('helios-core')
 
 const loggerUIBinder = LoggerUtil.getLogger('UIBinder')
 

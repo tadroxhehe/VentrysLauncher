@@ -3,7 +3,6 @@
  */
 // Requirements
 const { URL }                 = require('url')
-const path                    = require('path')
 const {
     MojangRestAPI,
     getServerStatus
