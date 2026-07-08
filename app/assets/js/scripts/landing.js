@@ -3,6 +3,7 @@
  */
 // Requirements
 const { URL }                 = require('url')
+const path                    = require('path')
 const {
     MojangRestAPI,
     getServerStatus
@@ -30,6 +31,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const { ensureDefaultServerList } = require('./assets/js/serverlistutil')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -525,6 +527,16 @@ async function dlAsync(login = true) {
     remote.getCurrentWindow().setProgressBar(-1)
 
     fullRepairModule.destroyReceiver()
+
+    const instanceDir = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id)
+    const serverAddress = serv.hostname && serv.port
+        ? `${serv.hostname}:${serv.port}`
+        : (serv.rawServer.address || '')
+    try {
+        ensureDefaultServerList(instanceDir, serv.rawServer.name, serverAddress)
+    } catch (err) {
+        loggerLaunchSuite.warn('Unable to prepare servers.dat before launch.', err)
+    }
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.preparingToLaunch'))
 

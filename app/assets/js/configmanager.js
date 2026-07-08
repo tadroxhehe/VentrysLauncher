@@ -41,7 +41,13 @@ exports.setDataDirectory = function(dataDirectory){
 
 const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
 const configPathLEGACY = path.join(dataPath, 'config.json')
+const configPathMIGRATION = [
+    path.join(sysRoot, 'helioslauncher', 'config.json'),
+    path.join(sysRoot, 'Helios Launcher', 'config.json'),
+    path.join(sysRoot, 'Ventrys Launcher', 'config.json')
+].filter(p => p !== configPath)
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
+    && !configPathMIGRATION.some(p => fs.existsSync(p))
 
 exports.getAbsoluteMinRAM = function(ram){
     if(ram?.minimum != null) {
@@ -128,9 +134,15 @@ exports.load = function(){
         if(fs.existsSync(configPathLEGACY)){
             fs.moveSync(configPathLEGACY, configPath)
         } else {
-            doLoad = false
-            config = DEFAULT_CONFIG
-            exports.save()
+            const migrationSource = configPathMIGRATION.find(p => fs.existsSync(p))
+            if(migrationSource){
+                logger.info(`Migrating config from ${migrationSource}`)
+                fs.copySync(migrationSource, configPath)
+            } else {
+                doLoad = false
+                config = DEFAULT_CONFIG
+                exports.save()
+            }
         }
     }
     if(doLoad){

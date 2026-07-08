@@ -3,7 +3,7 @@ const os     = require('os')
 const semver = require('semver')
 
 const DropinModUtil  = require('./assets/js/dropinmodutil')
-const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
+const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, DROPIN_MODS_ENABLED } = require('./assets/js/ipcconstants')
 
 const settingsState = {
     invalid: new Set()
@@ -323,10 +323,31 @@ function settingsSaveDisabled(v){
 
 function fullSettingsSave() {
     saveSettingsValues()
-    saveModConfiguration()
+    try {
+        saveModConfiguration()
+    } catch (err) {
+        console.warn('Mod configuration could not be saved.', err)
+    }
     ConfigManager.save()
     saveDropinModConfiguration()
     saveShaderpackSettings()
+}
+
+function saveSettingsOnExit() {
+    if(settingsState.invalid.size > 0){
+        return
+    }
+    try {
+        fullSettingsSave()
+    } catch (err) {
+        console.error('Failed to save settings on exit.', err)
+        try {
+            saveSettingsValues()
+            ConfigManager.save()
+        } catch (innerErr) {
+            console.error('Failed to save core settings on exit.', innerErr)
+        }
+    }
 }
 
 /* Closes the settings view and saves all data. */
@@ -856,6 +877,18 @@ let CACHE_DROPIN_MODS
  * populate the results onto the UI.
  */
 async function resolveDropinModsForUI(){
+    const container = document.getElementById('settingsDropinModsContainer')
+    if(!DROPIN_MODS_ENABLED){
+        if(container != null){
+            container.style.display = 'none'
+        }
+        CACHE_DROPIN_MODS = []
+        return
+    }
+    if(container != null){
+        container.style.display = null
+    }
+
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
     CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id, 'mods')
     CACHE_DROPIN_MODS = DropinModUtil.scanForDropinMods(CACHE_SETTINGS_MODS_DIR, serv.rawServer.minecraftVersion)
@@ -945,6 +978,9 @@ function bindDropinModFileSystemButton(){
  * of adding/removing the .disabled extension.
  */
 function saveDropinModConfiguration(){
+    if(!DROPIN_MODS_ENABLED){
+        return
+    }
     for(dropin of CACHE_DROPIN_MODS){
         const dropinUI = document.getElementById(dropin.fullName)
         if(dropinUI != null){
@@ -971,7 +1007,9 @@ function saveDropinModConfiguration(){
 document.addEventListener('keydown', async (e) => {
     if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
         if(e.key === 'F5'){
-            await reloadDropinMods()
+            if(DROPIN_MODS_ENABLED){
+                await reloadDropinMods()
+            }
             saveShaderpackSettings()
             await resolveShaderpacksForUI()
         }
@@ -1075,7 +1113,7 @@ async function loadSelectedServerOnModsTab(){
 
     for(const el of document.getElementsByClassName('settingsSelServContent')) {
         el.innerHTML = `
-            <img class="serverListingImg" src="${serv.rawServer.icon}"/>
+            <img class="serverListingImg" src="${serv.rawServer.icon || 'assets/images/ventryslogo.png'}"/>
             <div class="serverListingDetails">
                 <span class="serverListingName">${serv.rawServer.name}</span>
                 <span class="serverListingDescription">${serv.rawServer.description}</span>
@@ -1579,5 +1617,6 @@ async function prepareSettings(first = false) {
     prepareAboutTab()
 }
 
-// Prepare the settings UI on startup.
-//prepareSettings(true)
+// Save pending settings when the launcher window is closed.
+remote.getCurrentWindow().on('close', saveSettingsOnExit)
+window.addEventListener('beforeunload', saveSettingsOnExit)

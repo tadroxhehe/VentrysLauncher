@@ -7,6 +7,9 @@ exports.AZURE_CLIENT_ID = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
 // Auto-updates via GitHub Releases (see dev-app-update.yml).
 exports.AUTO_UPDATES_ENABLED = true
 
+// Allow players to add extra mods via the Mods tab (instances/<server>/mods).
+exports.DROPIN_MODS_ENABLED = false
+
 
 // Opcodes
 exports.MSFT_OPCODE = {

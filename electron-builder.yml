@@ -1,6 +1,6 @@
 appId: 'ventryslauncher'
 productName: 'Ventrys Launcher'
-artifactName: '${productName}-setup-${version}.${ext}'
+artifactName: 'Ventrys-Launcher-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
 
@@ -14,7 +14,8 @@ extraResources:
   - 'libraries'
 
 # Windows Configuration
-win: 
+win:
+  icon: build/icon.ico
   target: 
     - target: 'nsis'
       arch: 'x64'
