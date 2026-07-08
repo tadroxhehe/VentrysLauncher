@@ -13,8 +13,16 @@ const { LoggerUtil } = require('helios-core')
 
 const loggerUIBinder = LoggerUtil.getLogger('UIBinder')
 
+if(!ConfigManager.isLoaded()){
+    ConfigManager.load()
+}
+DistroAPI.commonDir = ConfigManager.getCommonDirectory()
+DistroAPI.instanceDir = ConfigManager.getInstanceDirectory()
+
 let rscShouldLoad = false
 let fatalStartupError = false
+let startupUiRevealed = false
+let startupDistributionStarted = false
 
 // Mapping of each view to their container IDs.
 const VIEWS = {
@@ -61,6 +69,14 @@ function getCurrentView(){
 }
 
 function revealLauncherUI() {
+    if(!isDev){
+        const { AUTO_UPDATES_ENABLED } = require('./assets/js/ipcconstants')
+        if(AUTO_UPDATES_ENABLED){
+            loggerAutoUpdater.info('Initializing..')
+            ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
+        }
+    }
+
     document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
     document.body.style.backgroundImage = `url('assets/images/backgrounds/fondventrys.jpg')`
     $('#main').show()
@@ -92,30 +108,32 @@ function revealLauncherUI() {
     }
 }
 
-function showMainUI(data){
-
-    if(!isDev){
-        const { AUTO_UPDATES_ENABLED } = require('./assets/js/ipcconstants')
-        if(AUTO_UPDATES_ENABLED){
-            loggerAutoUpdater.info('Initializing..')
-            ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
-        }
+function beginStartupUI() {
+    if(startupUiRevealed){
+        return
     }
+    startupUiRevealed = true
+    revealLauncherUI()
+}
 
-    setTimeout(() => {
-        try {
-            if(typeof updateSelectedServer === 'function'){
-                updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
-            }
-            if(typeof refreshServerStatus === 'function'){
-                refreshServerStatus()
-            }
-        } catch (err) {
-            loggerUIBinder.warn('Failed to refresh landing UI during startup.', err)
+function loadStartupDistribution(){
+    if(typeof DistroAPI.getDistributionLocalLoadOnly === 'function'){
+        return DistroAPI.getDistributionLocalLoadOnly()
+    }
+    return DistroAPI.getDistribution()
+}
+
+function completeStartupUI(data) {
+    try {
+        if(typeof updateSelectedServer === 'function'){
+            updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
         }
-
-        revealLauncherUI()
-    }, 750)
+        if(typeof refreshServerStatus === 'function'){
+            refreshServerStatus()
+        }
+    } catch (err) {
+        loggerUIBinder.warn('Failed to refresh landing UI during startup.', err)
+    }
 
     setTimeout(() => {
         try {
@@ -140,6 +158,37 @@ function showMainUI(data){
         }).catch(err => {
             loggerUIBinder.warn('News initialization failed during startup.', err)
         })
+    }
+}
+
+function onDistributionReady(){
+    beginStartupUI()
+
+    if(startupDistributionStarted){
+        return
+    }
+    startupDistributionStarted = true
+
+    loadStartupDistribution()
+        .then(data => completeStartupUI(data))
+        .catch(err => {
+            loggerUIBinder.warn('Local distribution load failed, trying remote.', err)
+            return DistroAPI.getDistribution()
+                .then(data => completeStartupUI(data))
+                .catch(err2 => {
+                    loggerUIBinder.error('Unable to load distribution index in renderer.', err2)
+                })
+        })
+}
+
+function showMainUI(data){
+    beginStartupUI()
+    if(data != null){
+        completeStartupUI(data)
+    } else {
+        loadStartupDistribution()
+            .then(d => completeStartupUI(d))
+            .catch(err => loggerUIBinder.error('Unable to complete startup UI setup.', err))
     }
 }
 
@@ -453,14 +502,13 @@ function setSelectedAccount(uuid){
 }
 
 // Synchronous Listener
-document.addEventListener('readystatechange', async () => {
+document.addEventListener('readystatechange', () => {
 
     if (document.readyState === 'interactive' || document.readyState === 'complete'){
         if(rscShouldLoad){
             rscShouldLoad = false
             if(!fatalStartupError){
-                const data = await DistroAPI.getDistribution()
-                showMainUI(data)
+                onDistributionReady()
             } else {
                 showFatalStartupError()
             }
@@ -470,11 +518,10 @@ document.addEventListener('readystatechange', async () => {
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.
-ipcRenderer.on('distributionIndexDone', async (event, res) => {
+ipcRenderer.on('distributionIndexDone', (event, res) => {
     if(res) {
-        const data = await DistroAPI.getDistribution()
         if(document.readyState === 'interactive' || document.readyState === 'complete'){
-            showMainUI(data)
+            onDistributionReady()
         } else {
             rscShouldLoad = true
         }
@@ -487,6 +534,13 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
         }
     }
 })
+
+setTimeout(() => {
+    if(!startupUiRevealed){
+        loggerUIBinder.warn('Startup watchdog: distribution signal missing or delayed, forcing UI reveal.')
+        onDistributionReady()
+    }
+}, 8000)
 
 // Util for development
 async function devModeToggle() {
