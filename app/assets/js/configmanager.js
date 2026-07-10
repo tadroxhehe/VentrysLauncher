@@ -290,6 +290,16 @@ exports.getInstanceDirectory = function(){
 }
 
 /**
+ * Retrieve the game directory for a specific server instance.
+ *
+ * @param {string} serverId Distribution server id.
+ * @returns {string} Absolute path to the instance directory.
+ */
+exports.getServerInstanceDirectory = function(serverId){
+    return path.join(exports.getInstanceDirectory(), serverId)
+}
+
+/**
  * Retrieve the launcher's Client Token.
  * There is no default client token.
  * 

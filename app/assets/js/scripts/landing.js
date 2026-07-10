@@ -30,7 +30,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const { ensureDefaultServerListForServer } = require('./assets/js/serverlistutil')
+const { ensureDefaultServerList } = require('./assets/js/serverlistutil')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -556,15 +556,6 @@ async function dlAsync(login = true) {
     }
     fullRepairModule.destroyReceiver()
 
-    const serverAddress = serv.hostname && serv.port
-        ? `${serv.hostname}:${serv.port}`
-        : (serv.rawServer.address || '')
-    try {
-        ensureDefaultServerListForServer(serv.rawServer.id, serv.rawServer.name, serverAddress)
-    } catch (err) {
-        loggerLaunchSuite.warn('Unable to prepare servers.dat before launch.', err)
-    }
-
     setLaunchDetails(Lang.queryJS('landing.dlAsync.preparingToLaunch'))
 
     let modLoaderData
@@ -611,12 +602,17 @@ async function dlAsync(login = true) {
                 proc.stdout.on('data', gameStateChange)
                 proc.stderr.on('data', gameStateChange)
             }
-            proc.stdout.removeListener('data', tempListener)
-            proc.stderr.removeListener('data', tempListener)
-            proc.stderr.removeListener('data', gameErrorListener)
+            if(proc.stdout != null){
+                proc.stdout.removeListener('data', tempListener)
+            }
+            if(proc.stderr != null){
+                proc.stderr.removeListener('data', tempListener)
+                proc.stderr.removeListener('data', gameErrorListener)
+            }
         }
         let loadCompleteHandled = false
         let launchUiFallbackTimer = null
+        let spawnGracePeriod = true
         const start = Date.now()
 
         const handleLaunchProgressLine = (line) => {
@@ -631,6 +627,23 @@ async function dlAsync(login = true) {
                     onLoadComplete()
                 }
             }
+        }
+
+        const scheduleServerListWrite = () => {
+            const serverAddress = serv.hostname && serv.port
+                ? `${serv.hostname}:${serv.port}`
+                : (serv.rawServer.address || '')
+            setImmediate(() => {
+                try {
+                    ensureDefaultServerList(
+                        ConfigManager.getServerInstanceDirectory(serv.rawServer.id),
+                        serv.rawServer.name,
+                        serverAddress
+                    )
+                } catch (err) {
+                    loggerLaunchSuite.warn('Unable to prepare servers.dat after launch.', err)
+                }
+            })
         }
 
         // Attach a temporary listener to the client output.
@@ -665,10 +678,20 @@ async function dlAsync(login = true) {
             // Build Minecraft process.
             proc = pb.build()
 
-            // Bind listeners to stdout.
+            if(proc == null || proc.pid == null){
+                throw new Error('Minecraft process failed to start.')
+            }
+
+            loggerLaunchSuite.info(`Minecraft process started (pid ${proc.pid}).`)
+            scheduleServerListWrite()
+
+            // Bind listeners to stdout/stderr for Discord and error detection.
             proc.stdout.on('data', tempListener)
             proc.stderr.on('data', tempListener)
             proc.stderr.on('data', gameErrorListener)
+
+            // Hide the launcher overlay as soon as Java starts; mod loading can take several minutes.
+            setTimeout(onLoadComplete, MIN_LINGER)
 
             launchUiFallbackTimer = setTimeout(() => {
                 if(!loadCompleteHandled){
@@ -677,18 +700,32 @@ async function dlAsync(login = true) {
                 }
             }, LAUNCH_UI_FALLBACK_MS)
 
+            setTimeout(() => {
+                spawnGracePeriod = false
+            }, 15000)
+
+            proc.on('close', (code, signal) => {
+                if(spawnGracePeriod && code !== 0 && code != null){
+                    loggerLaunchSuite.error(`Minecraft exited early with code ${code}${signal ? ` (${signal})` : ''}.`)
+                    showLaunchFailure(
+                        Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'),
+                        Lang.queryJS('landing.dlAsync.checkConsoleForDetails')
+                    )
+                }
+                if(hasRPC){
+                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
+                    DiscordWrapper.shutdownRPC()
+                    hasRPC = false
+                    proc = null
+                }
+            })
+
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
 
             // Init Discord Hook
             if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
                 DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                 hasRPC = true
-                proc.on('close', (code, signal) => {
-                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
-                    DiscordWrapper.shutdownRPC()
-                    hasRPC = false
-                    proc = null
-                })
             }
 
         } catch(err) {
