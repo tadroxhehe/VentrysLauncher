@@ -2,6 +2,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const zlib = require('zlib')
 
+const ConfigManager = require('./configmanager')
 const { LoggerUtil } = require('helios-core')
 
 const logger = LoggerUtil.getLogger('ServerList')
@@ -84,7 +85,23 @@ function ensureDefaultServerList(instanceDir, serverName, serverAddress) {
     logger.info(`Prepared multiplayer server list at ${serversDatPath}`)
 }
 
+/**
+ * Ensure servers.dat for a distribution server id.
+ *
+ * @param {string} serverId Distribution server id.
+ * @param {string} serverName Display name shown in the multiplayer list.
+ * @param {string} serverAddress Hostname with optional port (host:port).
+ */
+function ensureDefaultServerListForServer(serverId, serverName, serverAddress) {
+    ensureDefaultServerList(
+        path.join(ConfigManager.getInstanceDirectory(), serverId),
+        serverName,
+        serverAddress
+    )
+}
+
 module.exports = {
     buildServersDatPayload,
-    ensureDefaultServerList
+    ensureDefaultServerList,
+    ensureDefaultServerListForServer
 }

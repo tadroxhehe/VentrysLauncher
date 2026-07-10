@@ -30,7 +30,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const { ensureDefaultServerList } = require('./assets/js/serverlistutil')
+const { ensureDefaultServerListForServer } = require('./assets/js/serverlistutil')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -104,6 +104,16 @@ document.getElementById('launch_button').addEventListener('click', async e => {
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+        if(server == null){
+            loggerLanding.error('Selected server is missing from the distribution index.')
+            showLaunchFailure(Lang.queryJS('landing.launch.failureTitle'), Lang.queryJS('landing.launch.failureText'))
+            return
+        }
+        if(ConfigManager.getSelectedAccount() == null){
+            loggerLanding.error('You must be logged into an account.')
+            showLaunchFailure(Lang.queryJS('landing.launch.failureTitle'), Lang.queryJS('landing.selectedAccount.noAccountSelected'))
+            return
+        }
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
         if(jExe == null){
             await asyncSystemScan(server.effectiveJavaOptions)
@@ -466,12 +476,16 @@ async function dlAsync(login = true) {
     }
 
     const serv = distro.getServerById(ConfigManager.getSelectedServer())
+    if(serv == null){
+        loggerLaunchSuite.error('Selected server is missing from the distribution index.')
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.fatalError'), Lang.queryJS('landing.launch.failureText'))
+        return
+    }
 
-    if(login) {
-        if(ConfigManager.getSelectedAccount() == null){
-            loggerLanding.error('You must be logged into an account.')
-            return
-        }
+    if(login && ConfigManager.getSelectedAccount() == null){
+        loggerLaunchSuite.error('You must be logged into an account.')
+        showLaunchFailure(Lang.queryJS('landing.launch.failureTitle'), Lang.queryJS('landing.selectedAccount.noAccountSelected'))
+        return
     }
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.pleaseWait'))
@@ -542,29 +556,36 @@ async function dlAsync(login = true) {
     }
     fullRepairModule.destroyReceiver()
 
-    const instanceDir = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id)
     const serverAddress = serv.hostname && serv.port
         ? `${serv.hostname}:${serv.port}`
         : (serv.rawServer.address || '')
     try {
-        ensureDefaultServerList(instanceDir, serv.rawServer.name, serverAddress)
+        ensureDefaultServerListForServer(serv.rawServer.id, serv.rawServer.name, serverAddress)
     } catch (err) {
         loggerLaunchSuite.warn('Unable to prepare servers.dat before launch.', err)
     }
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.preparingToLaunch'))
 
-    const mojangIndexProcessor = new MojangIndexProcessor(
-        ConfigManager.getCommonDirectory(),
-        serv.rawServer.minecraftVersion)
-    const distributionIndexProcessor = new DistributionIndexProcessor(
-        ConfigManager.getCommonDirectory(),
-        distro,
-        serv.rawServer.id
-    )
+    let modLoaderData
+    let versionData
+    try {
+        const mojangIndexProcessor = new MojangIndexProcessor(
+            ConfigManager.getCommonDirectory(),
+            serv.rawServer.minecraftVersion)
+        const distributionIndexProcessor = new DistributionIndexProcessor(
+            ConfigManager.getCommonDirectory(),
+            distro,
+            serv.rawServer.id
+        )
 
-    const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
-    const versionData = await mojangIndexProcessor.getVersionJson()
+        modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
+        versionData = await mojangIndexProcessor.getVersionJson()
+    } catch (err) {
+        loggerLaunchSuite.error('Error while preparing launch metadata.', err)
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.checkConsoleForDetails'))
+        return
+    }
 
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()
