@@ -1,28 +1,866 @@
 {
-    "version": "1.0.0",
-    "discord": {
-        "clientId": "000000000000000000",
-        "smallImageText": "Ventrys Launcher",
-        "smallImageKey": "seal-circle"
-    },
-    "rss": "https://forum.westeroscraft.com/forum/news.2/index.rss",
-    "servers": [
+  "version": "1.0.0",
+  "rss": "",
+  "discord": {
+    "clientId": "000000000000000000",
+    "smallImageText": "Ventrys Launcher",
+    "smallImageKey": "seal-circle"
+  },
+  "servers": [
+    {
+      "id": "Ventrys-Server-1.18.2",
+      "name": "Ventrys RP",
+      "description": "Serveur roleplay Ventry's — Minecraft 1.18.2 Forge.",
+      "icon": null,
+      "version": "1.0.0",
+      "address": "ventysgot.merryhost.fr:25565",
+      "minecraftVersion": "1.18.2",
+      "discord": {
+        "shortId": "Ventrys",
+        "largeImageText": "Ventrys RP",
+        "largeImageKey": "server-ventrys"
+      },
+      "mainServer": true,
+      "autoconnect": false,
+      "modules": [
         {
-            "id": "Ventrys-Server",
-            "name": "Ventrys RP",
-            "description": "Serveur roleplay Ventrys",
-            "icon": "http://127.0.0.1:8080/files/ventryslogo.png",
-            "version": "1.0.0",
-            "address": "ventysgot.merryhost.fr:25570",
-            "minecraftVersion": "1.18.2",
-            "discord": {
-                "shortId": "Ventrys",
-                "largeImageText": "Ventrys RP",
-                "largeImageKey": "server-ventrys"
+          "id": "net.minecraftforge:lowcodelanguage:1.18.2-40.2.21",
+          "name": "Minecraft Forge (lowcodelanguage)",
+          "type": "ForgeHosted",
+          "classpath": true,
+          "artifact": {
+            "size": 7382,
+            "MD5": "5bc47a3da66dcab9f3860bb8c0383c51",
+            "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/lowcodelanguage/1.18.2-40.2.21/lowcodelanguage-1.18.2-40.2.21.jar"
+          },
+          "subModules": [
+            {
+              "id": "1.18.2-40.2.21",
+              "name": "Minecraft Forge (version.json)",
+              "type": "VersionManifest",
+              "artifact": {
+                "size": 15551,
+                "MD5": "d3ea6132baa1c87dcd859d485c7fc93c",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/versions/1.18.2-forge-40.2.21/1.18.2-forge-40.2.21.json"
+              }
             },
-            "mainServer": true,
-            "autoconnect": true,
-            "modules": []
+            {
+              "id": "net.minecraftforge:fmlcore:1.18.2-40.2.21",
+              "name": "Minecraft Forge (fmlcore)",
+              "type": "Library",
+              "classpath": true,
+              "artifact": {
+                "size": 111968,
+                "MD5": "13a23cd0c61325fb3369f8369d0a49b6",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/fmlcore/1.18.2-40.2.21/fmlcore-1.18.2-40.2.21.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraftforge:javafmllanguage:1.18.2-40.2.21",
+              "name": "Minecraft Forge (javafmllanguage)",
+              "type": "Library",
+              "classpath": true,
+              "artifact": {
+                "size": 16292,
+                "MD5": "cf6f36febc5194f0a9549d8d6faed066",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/javafmllanguage/1.18.2-40.2.21/javafmllanguage-1.18.2-40.2.21.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraftforge:mclanguage:1.18.2-40.2.21",
+              "name": "Minecraft Forge (mclanguage)",
+              "type": "Library",
+              "classpath": true,
+              "artifact": {
+                "size": 4987,
+                "MD5": "c4aca63bf7854c77240569fa794768ed",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/mclanguage/1.18.2-40.2.21/mclanguage-1.18.2-40.2.21.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraftforge:forge:1.18.2-40.2.21:universal",
+              "name": "Minecraft Forge (universal jar)",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 2540054,
+                "MD5": "33239abc725afb237ad036043538627c",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/forge/1.18.2-40.2.21/forge-1.18.2-40.2.21-universal.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraftforge:forge:1.18.2-40.2.21:client",
+              "name": "Minecraft Forge (client jar)",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 4367198,
+                "MD5": "703656e85bb6af1eb5557e0b65bb7468",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/forge/1.18.2-40.2.21/forge-1.18.2-40.2.21-client.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.18.2-20220404.173914:srg",
+              "name": "Minecraft Forge (client srg)",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 13796791,
+                "MD5": "49d0ce9681f0ffd3c5a177f6ad45c80b",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraft/client/1.18.2-20220404.173914/client-1.18.2-20220404.173914-srg.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.18.2-20220404.173914:slim",
+              "name": "Minecraft Forge (client slim)",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 10909711,
+                "MD5": "62184203a1e66c6c72b415b7d6e64c0d",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraft/client/1.18.2-20220404.173914/client-1.18.2-20220404.173914-slim.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.18.2-20220404.173914:extra",
+              "name": "Minecraft Forge (client extra)",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 9349972,
+                "MD5": "5de62b239289ed8e596b386766b87b41",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraft/client/1.18.2-20220404.173914/client-1.18.2-20220404.173914-extra.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "cpw.mods:securejarhandler:1.0.8",
+              "name": "Minecraft Forge (securejarhandler)",
+              "type": "Library",
+              "artifact": {
+                "size": 85028,
+                "MD5": "102e2b8d94eec8aca0da835d2d3a359e",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/cpw/mods/securejarhandler/1.0.8/securejarhandler-1.0.8.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm:9.7",
+              "name": "Minecraft Forge (asm)",
+              "type": "Library",
+              "artifact": {
+                "size": 125428,
+                "MD5": "3957b18bf02a62edcb6726d074b90b08",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/ow2/asm/asm/9.7/asm-9.7.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-commons:9.7",
+              "name": "Minecraft Forge (asm-commons)",
+              "type": "Library",
+              "artifact": {
+                "size": 73426,
+                "MD5": "53a46610df6a8dbc4ff85b8fd4cdea66",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/ow2/asm/asm-commons/9.7/asm-commons-9.7.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-tree:9.7",
+              "name": "Minecraft Forge (asm-tree)",
+              "type": "Library",
+              "artifact": {
+                "size": 51934,
+                "MD5": "ea5cad3e0cbd2520688e4b0b5c4218e7",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/ow2/asm/asm-tree/9.7/asm-tree-9.7.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-util:9.7",
+              "name": "Minecraft Forge (asm-util)",
+              "type": "Library",
+              "artifact": {
+                "size": 93784,
+                "MD5": "e7d6e20888e6fd99605f4c5fe1dfa8b0",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/ow2/asm/asm-util/9.7/asm-util-9.7.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-analysis:9.7",
+              "name": "Minecraft Forge (asm-analysis)",
+              "type": "Library",
+              "artifact": {
+                "size": 34776,
+                "MD5": "910ac9c691023f1a9ff33c413ae9fbf6",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/ow2/asm/asm-analysis/9.7/asm-analysis-9.7.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:accesstransformers:8.0.4",
+              "name": "Minecraft Forge (accesstransformers)",
+              "type": "Library",
+              "artifact": {
+                "size": 77756,
+                "MD5": "f0d3533f9437ba4428eaee9f28f7ecd9",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/accesstransformers/8.0.4/accesstransformers-8.0.4.jar"
+              }
+            },
+            {
+              "id": "org.antlr:antlr4-runtime:4.9.1",
+              "name": "Minecraft Forge (antlr4-runtime)",
+              "type": "Library",
+              "artifact": {
+                "size": 337868,
+                "MD5": "0dcc4b860d5d8d2852ab94d58c56ca2d",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/antlr/antlr4-runtime/4.9.1/antlr4-runtime-4.9.1.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:eventbus:5.0.3",
+              "name": "Minecraft Forge (eventbus)",
+              "type": "Library",
+              "artifact": {
+                "size": 42838,
+                "MD5": "c8b735cdfe9975a569626d72ad40377f",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/eventbus/5.0.3/eventbus-5.0.3.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:forgespi:4.0.15-4.x",
+              "name": "Minecraft Forge (forgespi)",
+              "type": "Library",
+              "artifact": {
+                "size": 22072,
+                "MD5": "8509a972b27c9f037d55c61e16fc051f",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/forgespi/4.0.15-4.x/forgespi-4.0.15-4.x.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:coremods:5.0.1",
+              "name": "Minecraft Forge (coremods)",
+              "type": "Library",
+              "artifact": {
+                "size": 24199,
+                "MD5": "8c590051c5d65e098ca7c2e3ddf803a8",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/coremods/5.0.1/coremods-5.0.1.jar"
+              }
+            },
+            {
+              "id": "cpw.mods:modlauncher:9.1.3",
+              "name": "Minecraft Forge (modlauncher)",
+              "type": "Library",
+              "artifact": {
+                "size": 129301,
+                "MD5": "dca70519c3e53ac018d6f50c6f90cd38",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/cpw/mods/modlauncher/9.1.3/modlauncher-9.1.3.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:unsafe:0.2.0",
+              "name": "Minecraft Forge (unsafe)",
+              "type": "Library",
+              "artifact": {
+                "size": 2834,
+                "MD5": "2d1016ebe4c1a63dd50a59d26bd12db1",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
+              }
+            },
+            {
+              "id": "com.electronwill.night-config:core:3.6.4",
+              "name": "Minecraft Forge (core)",
+              "type": "Library",
+              "artifact": {
+                "size": 199834,
+                "MD5": "d83ab07267e402131fb93d899a57f5cd",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/com/electronwill/night-config/core/3.6.4/core-3.6.4.jar"
+              }
+            },
+            {
+              "id": "com.electronwill.night-config:toml:3.6.4",
+              "name": "Minecraft Forge (toml)",
+              "type": "Library",
+              "artifact": {
+                "size": 31816,
+                "MD5": "bc95d0709fff2164b01fd09fbc988be8",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/com/electronwill/night-config/toml/3.6.4/toml-3.6.4.jar"
+              }
+            },
+            {
+              "id": "org.apache.maven:maven-artifact:3.6.3",
+              "name": "Minecraft Forge (maven-artifact)",
+              "type": "Library",
+              "artifact": {
+                "size": 57824,
+                "MD5": "b83c1943a0783f3f81d4cd4c83c363e1",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/apache/maven/maven-artifact/3.6.3/maven-artifact-3.6.3.jar"
+              }
+            },
+            {
+              "id": "net.jodah:typetools:0.8.3",
+              "name": "Minecraft Forge (typetools)",
+              "type": "Library",
+              "artifact": {
+                "size": 15425,
+                "MD5": "ee4596e1413cc1a5e080c971d6064753",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/jodah/typetools/0.8.3/typetools-0.8.3.jar"
+              }
+            },
+            {
+              "id": "net.minecrell:terminalconsoleappender:1.2.0",
+              "name": "Minecraft Forge (terminalconsoleappender)",
+              "type": "Library",
+              "artifact": {
+                "size": 15977,
+                "MD5": "679363fa893293791e55a21f81342f87",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar"
+              }
+            },
+            {
+              "id": "org.jline:jline-reader:3.12.1",
+              "name": "Minecraft Forge (jline-reader)",
+              "type": "Library",
+              "artifact": {
+                "size": 150765,
+                "MD5": "a2e7b012cd9802f83321187409174a94",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/jline/jline-reader/3.12.1/jline-reader-3.12.1.jar"
+              }
+            },
+            {
+              "id": "org.jline:jline-terminal:3.12.1",
+              "name": "Minecraft Forge (jline-terminal)",
+              "type": "Library",
+              "artifact": {
+                "size": 211712,
+                "MD5": "3c52be5ab5e3847be6e62269de924cb0",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/jline/jline-terminal/3.12.1/jline-terminal-3.12.1.jar"
+              }
+            },
+            {
+              "id": "org.spongepowered:mixin:0.8.5",
+              "name": "Minecraft Forge (mixin)",
+              "type": "Library",
+              "artifact": {
+                "size": 1089277,
+                "MD5": "19b3a2ae9e445a6e626fd7d1648cfcb8",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/spongepowered/mixin/0.8.5/mixin-0.8.5.jar"
+              }
+            },
+            {
+              "id": "org.openjdk.nashorn:nashorn-core:15.3",
+              "name": "Minecraft Forge (nashorn-core)",
+              "type": "Library",
+              "artifact": {
+                "size": 2167288,
+                "MD5": "91e98c20afa1090c344229ce28b4c53f",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:JarJarSelector:0.3.19",
+              "name": "Minecraft Forge (JarJarSelector)",
+              "type": "Library",
+              "artifact": {
+                "size": 17374,
+                "MD5": "2bb6cbe0e6c6fbcd8f92d2e6b1ea678e",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/JarJarSelector/0.3.19/JarJarSelector-0.3.19.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:JarJarMetadata:0.3.19",
+              "name": "Minecraft Forge (JarJarMetadata)",
+              "type": "Library",
+              "artifact": {
+                "size": 15895,
+                "MD5": "9633546d299d4282ca68d10582be1c8f",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/JarJarMetadata/0.3.19/JarJarMetadata-0.3.19.jar"
+              }
+            },
+            {
+              "id": "cpw.mods:bootstraplauncher:1.0.0",
+              "name": "Minecraft Forge (bootstraplauncher)",
+              "type": "Library",
+              "artifact": {
+                "size": 7828,
+                "MD5": "1632575563bb6ead2ae3a087945f18be",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/cpw/mods/bootstraplauncher/1.0.0/bootstraplauncher-1.0.0.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:JarJarFileSystems:0.3.19",
+              "name": "Minecraft Forge (JarJarFileSystems)",
+              "type": "Library",
+              "artifact": {
+                "size": 32195,
+                "MD5": "c2be1a88b63eb1b58b00ab6e498cd97d",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/JarJarFileSystems/0.3.19/JarJarFileSystems-0.3.19.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:fmlloader:1.18.2-40.2.21",
+              "name": "Minecraft Forge (fmlloader)",
+              "type": "Library",
+              "artifact": {
+                "size": 257596,
+                "MD5": "31a242ef4cfd6bb6051f2d2adbf592cd",
+                "url": "http://ventysgot.merryhost.fr:25570/repo/lib/net/minecraftforge/fmlloader/1.18.2-40.2.21/fmlloader-1.18.2-40.2.21.jar"
+              }
+            }
+          ]
+        },
+        {
+          "id": "dev.architectury:architectury:4.12.94@jar",
+          "name": "Architectury",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 552356,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/architectury-4.12.94-forge.jar",
+            "MD5": "2b4ce34ff2c095c723b8521ac7ecfd3e"
+          }
+        },
+        {
+          "id": "de.mennomax:astikorcarts:1.1.2@jar",
+          "name": "AstikorCarts",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 261090,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/astikorcarts-1.18.2-1.1.2.jar",
+            "MD5": "3cdbc29b2d810d06daaaec7a6eb3f76a"
+          }
+        },
+        {
+          "id": "lol.bai.badpackets.impl:badpackets:0.1.3@jar",
+          "name": "Bad Packets API",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 25707,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/badpackets-forge-0.1.3.jar",
+            "MD5": "a794a5cac107ed8209288e18dd39350b"
+          }
+        },
+        {
+          "id": "io.github.kosmx:bendylib:2.1.1@jar",
+          "name": "Bendy lib",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 36623,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/bendy-lib-forge-2.1.1.jar",
+            "MD5": "58989d5ae5bec172a564f704d1a254a3"
+          }
+        },
+        {
+          "id": "me.shedaniel.clothconfig:cloth_config:6.5.133@jar",
+          "name": "Cloth Config v4 API",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 1173218,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/cloth-config-6.5.133-forge.jar",
+            "MD5": "ecfc9580ed2cf4c5e428eb598ffa3d03"
+          }
+        },
+        {
+          "id": "team.creative:creativecore:2.11.27@jar",
+          "name": "CreativeCore",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 1096884,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/CreativeCore_FORGE_v2.11.27_mc1.18.2.jar",
+            "MD5": "e4d25feb00fae06c3a3d7fde27af11d2"
+          }
+        },
+        {
+          "id": "team.chisel:ctm:1.18.2-1.1.5+5@jar",
+          "name": "ConnectedTexturesMod",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 192307,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/CTM-1.18.2-1.1.5+5.jar",
+            "MD5": "c4a2bc8a4cc006090bacc3b963883050"
+          }
+        },
+        {
+          "id": "net.lostluma.dynamic_fps.impl:dynamic_fps:3.9.5@jar",
+          "name": "Dynamic FPS",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 383577,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/dynamic-fps-3.9.5+minecraft-1.18.0-forge.jar",
+            "MD5": "807df90fbdf95429f0b494f51bffc9f1"
+          }
+        },
+        {
+          "id": "me.jellysquid.mods.sodium.client:embeddium:0.3.18+mc1.18.2@jar",
+          "name": "Embeddium",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 1558603,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/embeddium-0.3.18+mc1.18.2.jar",
+            "MD5": "dde002cb54d8eeb0d33f8be54983c466"
+          }
+        },
+        {
+          "id": "io.github.kosmx.emotes:emotecraft:2.2.7-b.build.50@jar",
+          "name": "Emotecraft",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 676761,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/emotecraft-for-MC1.18.2-2.2.7-b.build.50-forge.jar",
+            "MD5": "f89d6650a0edb095edebdec3dd6f0641"
+          }
+        },
+        {
+          "id": "dev.tr7zw:entityculling:1.6.1@jar",
+          "name": "EntityCulling",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 59875,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/entityculling-forge-1.6.1-mc1.18.2.jar",
+            "MD5": "3145e53a4f8c39df16f1e53ab23c866b"
+          }
+        },
+        {
+          "id": "com.farsight:farsight_view:1.18.2-1.9@jar",
+          "name": "Farsight mod",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 10707,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/farsight-1.18.2-1.9.jar",
+            "MD5": "bce870d88db478b482260283af2efc06"
+          }
+        },
+        {
+          "id": "malte0811.ferritecore:ferritecore:4.2.2@jar",
+          "name": "Ferrite Core",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 116626,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/ferritecore-4.2.2-forge.jar",
+            "MD5": "ea8c0bfc697a73b0d1886e43a1a5a282"
+          }
+        },
+        {
+          "id": "software.bernie.example:geckolib3:3.0.57@jar",
+          "name": "GeckoLib",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 2927832,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/geckolib-forge-1.18-3.0.57.jar",
+            "MD5": "d491c30c6d9bd3f767bd545cbaf6502e"
+          }
+        },
+        {
+          "id": "de.keksuccino:konkrete:1.8.0@jar",
+          "name": "Konkrete",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 641733,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/konkrete_forge_1.8.0_MC_1.18-1.18.2.jar",
+            "MD5": "3a333a9b570f11009e913b7297148cd5"
+          }
+        },
+        {
+          "id": "generated.forgemod:kotlinforforge:3.12.0-all@jar",
+          "name": "Kotlinforforge",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 7365976,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/kotlinforforge-3.12.0-all.jar",
+            "MD5": "9026097ff419bd2d8a10f2e5755d4888"
+          }
+        },
+        {
+          "id": "me.steinborn:lazydfu:0.1.3@jar",
+          "name": "LazyDFU",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 15445,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/lazydfu-1.0-1.18+.jar",
+            "MD5": "f90813b92c422c9f159c5e7d89167233"
+          }
+        },
+        {
+          "id": "me.lucko.luckperms.forge.loader:luckperms:5.4.26@jar",
+          "name": "LuckPerms",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 1372830,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/LuckPerms-Forge-5.4.26.jar",
+            "MD5": "45ab1ae05ecfaa39fbce2451e9df8995"
+          }
+        },
+        {
+          "id": "org.thinkingstudio:mafglib:0.1.14-mc1.18.2@jar",
+          "name": "MaFgLib",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 499847,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/MaFgLib-0.1.14-mc1.18.2.jar",
+            "MD5": "1c7f44a76d302ab0c696b57ba9b6b7fd"
+          }
+        },
+        {
+          "id": "org.orecruncher:dsurround:5.0.0.4@jar",
+          "name": "§3Dynamic Surroundings: Resurrected",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 14852449,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/optionalon/ModernDynamicSurroundings-5.0.0.4.jar",
+            "MD5": "46353012bf05d8d69a56988811da28ed"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "org.embeddedt.modernfix.forge.init:modernfix:5.18.0+mc1.18.2@jar",
+          "name": "ModernFix",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 758116,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/modernfix-forge-5.18.0+mc1.18.2.jar",
+            "MD5": "23bb7d1cf555ca6b0d3c9f3db6ecae7e"
+          }
+        },
+        {
+          "id": "com.focamacho:myserveriscompatible:1.0@jar",
+          "name": "MyServerIsCompatible",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 3404,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/MyServerIsCompatible-1.18-1.0.jar",
+            "MD5": "c1a85ddad62869ac67cd3b5d24e00d29"
+          }
+        },
+        {
+          "id": "net.coderbot.iris:oculus:1.6.4@jar",
+          "name": "Oculus",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 3503276,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/oculus-mc1.18.2-1.6.4.jar",
+            "MD5": "27217fce55880bb932f21bf0e9b9c777"
+          }
+        },
+        {
+          "id": "su.plo.voice:plasmovoice:2.1.10@jar",
+          "name": "Plasmo Voice",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 12232966,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/plasmovoice-forge-1.18.2-2.1.10.jar",
+            "MD5": "44b4300e9115581c3b916c9e3169b24d"
+          }
+        },
+        {
+          "id": "dev.kosmx.playeranim:playeranimator:1.0.2+1.18@jar",
+          "name": "Player Animator",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 181336,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/player-animation-lib-forge-1.0.2+1.18.jar",
+            "MD5": "33e51d8320f9d5d8e37bc7f9479d6a3e"
+          }
+        },
+        {
+          "id": "me.flashyreese.mods.reeses_sodium_options:textrues_embeddium_options:0.1.1+mc1.18.2@jar",
+          "name": "TexTrue's Embeddium Options",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 71061,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/textrues_embeddium_options-0.1.1+mc1.18.2.jar",
+            "MD5": "916558810edcad1be24a36fb4b098dc9"
+          }
+        },
+        {
+          "id": "com.example:ventryschat:2.2.1@jar",
+          "name": "VentrysChat - Chat RP",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 5610940,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysChat.jar",
+            "MD5": "19f9b65529cf6a6ef671b5fe3036d378"
+          }
+        },
+        {
+          "id": "com.ventrys.combat:ventryscombat:1.0.0@jar",
+          "name": "Ventrys Combat - Système d'Armes Complet",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 520426,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysCombat.jar",
+            "MD5": "55cb8ba7aaad609986d7bdf1984fc420"
+          }
+        },
+        {
+          "id": "net.mcreator.ventrysblocs:ventrys_blocs:1.0.0@jar",
+          "name": "Ventrys_Blocs",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 904053,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysDeco.jar",
+            "MD5": "e9e2b8f9118f47036d8b60dd58c1d4d2"
+          }
+        },
+        {
+          "id": "com.hdskinmod:hdskinmod:1.0.0@jar",
+          "name": "VentrysHD Skin MOD",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 471732,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysHD.jar",
+            "MD5": "f9d13275d53848df48ff87099ad4e6ca"
+          }
+        },
+        {
+          "id": "com.ventrys.job:ventrysjob:1.0.3@jar",
+          "name": "VentrysJob",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 2688377,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/ventrysjob.jar",
+            "MD5": "ab5d9f5c85bd57047d4721d94347c564"
+          }
+        },
+        {
+          "id": "net.mcreator.ventrysmob:ventrys_mob:1.0.0@jar",
+          "name": "Ventrys_mob",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 8999104,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysMobs.jar",
+            "MD5": "07b518c138d7a1a11eb1edf069c93752"
+          }
+        },
+        {
+          "id": "com.ventrys.permissions:ventryspermissions:1.0.4@jar",
+          "name": "Ventrys Permissions",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 130220,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysPermissions.jar",
+            "MD5": "3d7ec20b3f1e44baef7549e32311efe2"
+          }
+        },
+        {
+          "id": "com.tadrox:ventryssurvival:1.0.3@jar",
+          "name": "VentrysSurvival",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 2503784,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/VentrysSurvival.jar",
+            "MD5": "d808a3ab6862ce88ea2c0beea3ccefaf"
+          }
+        },
+        {
+          "id": "com.westeroscraft:westerosblocks:1.18.2-6.0.312@jar",
+          "name": "WesterosBlocks",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 106033771,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/WesterosBlocks-1.18.2-6.0.312.jar",
+            "MD5": "2b84da75f0ba40862747364b433b4c64"
+          }
+        },
+        {
+          "id": "com.westeroscraft:westerosctm:1.18.2-0.3.52@jar",
+          "name": "WesterosCTM",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 66315,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/WesterosCTM-1.18.2-0.3.66.jar",
+            "MD5": "ef98665f565fe7de72e24358e9fcbdb5"
+          }
+        },
+        {
+          "id": "com.sk89q:worldedit:7.2.10+1742f98@jar",
+          "name": "WorldEdit",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 5500682,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/required/worldedit-mod-7.2.10.jar",
+            "MD5": "862cec57e297ec8f97f74745c2e8b905"
+          }
+        },
+        {
+          "id": "org.enginehub:worldeditcui:1.18+01@jar",
+          "name": "WorldEditCUI",
+          "type": "ForgeMod",
+          "artifact": {
+            "size": 162078,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/forgemods/optionalon/WorldEditCUI-1.18+01.jar",
+            "MD5": "6c86aaa06fca7403528ead42cdbafddb"
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "id": "options.txt",
+          "name": "options.txt",
+          "type": "File",
+          "artifact": {
+            "size": 509,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/options.txt",
+            "path": "options.txt"
+          }
+        },
+        {
+          "id": "optionsshaders.txt",
+          "name": "optionsshaders.txt",
+          "type": "File",
+          "artifact": {
+            "size": 234,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/optionsshaders.txt",
+            "path": "optionsshaders.txt"
+          }
+        },
+        {
+          "id": "Ventrys_pack.zip",
+          "name": "Ventrys_pack.zip",
+          "type": "File",
+          "artifact": {
+            "size": 37048674,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/resourcepacks/Ventrys_pack.zip",
+            "MD5": "597ba6c8f56d4b00efa0bde860639a8a",
+            "path": "resourcepacks/Ventrys_pack.zip"
+          }
+        },
+        {
+          "id": "servers.dat",
+          "name": "servers.dat",
+          "type": "File",
+          "artifact": {
+            "size": 111,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/servers.dat",
+            "path": "servers.dat"
+          }
+        },
+        {
+          "id": "servers_uncompressed.dat",
+          "name": "servers_uncompressed.dat",
+          "type": "File",
+          "artifact": {
+            "size": 92,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/servers_uncompressed.dat",
+            "path": "servers_uncompressed.dat"
+          }
+        },
+        {
+          "id": "ComplementaryReimagined_r5.8.1.zip",
+          "name": "ComplementaryReimagined_r5.8.1.zip",
+          "type": "File",
+          "artifact": {
+            "size": 546925,
+            "url": "http://ventysgot.merryhost.fr:25570/servers/Ventrys-Server-1.18.2/files/shaderpacks/ComplementaryReimagined_r5.8.1.zip",
+            "MD5": "8dbb914ed233d6e8183ce34eb26beaab",
+            "path": "shaderpacks/ComplementaryReimagined_r5.8.1.zip"
+          }
         }
-    ]
+      ]
+    }
+  ]
 }

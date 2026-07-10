@@ -432,8 +432,18 @@ let hasRPC = false
 // Joined server regex
 // Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
-const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
+const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher(?: .+)? (?:starting|running): .+|Loading Minecraft .+ with Fabric Loader .+)$/
 const MIN_LINGER = 2000
+const LAUNCH_UI_FALLBACK_MS = 120000
+
+function forEachGameLogLine(data, handler){
+    data.toString().split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim()
+        if(trimmed.length > 0){
+            handler(trimmed)
+        }
+    })
+}
 
 async function dlAsync(login = true) {
 
@@ -478,16 +488,18 @@ async function dlAsync(login = true) {
 
     fullRepairModule.spawnReceiver()
 
-    fullRepairModule.childProcess.on('error', (err) => {
-        loggerLaunchSuite.error('Error during launch', err)
-        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'))
-    })
-    fullRepairModule.childProcess.on('close', (code, _signal) => {
+    const onRepairProcessClose = (code, _signal) => {
         if(code !== 0){
             loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`)
             showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
         }
+    }
+
+    fullRepairModule.childProcess.on('error', (err) => {
+        loggerLaunchSuite.error('Error during launch', err)
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'))
     })
+    fullRepairModule.childProcess.on('close', onRepairProcessClose)
 
     loggerLaunchSuite.info('Validating files.')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
@@ -525,6 +537,9 @@ async function dlAsync(login = true) {
     // Remove download bar.
     remote.getCurrentWindow().setProgressBar(-1)
 
+    if(fullRepairModule.childProcess != null){
+        fullRepairModule.childProcess.removeListener('close', onRepairProcessClose)
+    }
     fullRepairModule.destroyReceiver()
 
     const instanceDir = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id)
@@ -561,22 +576,33 @@ async function dlAsync(login = true) {
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
         const onLoadComplete = () => {
+            if(loadCompleteHandled){
+                return
+            }
+            loadCompleteHandled = true
+            if(launchUiFallbackTimer != null){
+                clearTimeout(launchUiFallbackTimer)
+                launchUiFallbackTimer = null
+            }
             toggleLaunchArea(false)
             if(hasRPC){
                 DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
+                proc.stderr.on('data', gameStateChange)
             }
             proc.stdout.removeListener('data', tempListener)
+            proc.stderr.removeListener('data', tempListener)
             proc.stderr.removeListener('data', gameErrorListener)
         }
+        let loadCompleteHandled = false
+        let launchUiFallbackTimer = null
         const start = Date.now()
 
-        // Attach a temporary listener to the client output.
-        // Will wait for a certain bit of text meaning that
-        // the client application has started, and we can hide
-        // the progress bar stuff.
-        const tempListener = function(data){
-            if(GAME_LAUNCH_REGEX.test(data.trim())){
+        const handleLaunchProgressLine = (line) => {
+            if(loadCompleteHandled){
+                return
+            }
+            if(GAME_LAUNCH_REGEX.test(line)){
                 const diff = Date.now()-start
                 if(diff < MIN_LINGER) {
                     setTimeout(onLoadComplete, MIN_LINGER-diff)
@@ -586,22 +612,32 @@ async function dlAsync(login = true) {
             }
         }
 
+        // Attach a temporary listener to the client output.
+        // Will wait for a certain bit of text meaning that
+        // the client application has started, and we can hide
+        // the progress bar stuff.
+        const tempListener = function(data){
+            forEachGameLogLine(data, handleLaunchProgressLine)
+        }
+
         // Listener for Discord RPC.
         const gameStateChange = function(data){
-            data = data.trim()
-            if(SERVER_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joined'))
-            } else if(GAME_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joining'))
-            }
+            forEachGameLogLine(data, line => {
+                if(SERVER_JOINED_REGEX.test(line)){
+                    DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joined'))
+                } else if(GAME_JOINED_REGEX.test(line)){
+                    DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joining'))
+                }
+            })
         }
 
         const gameErrorListener = function(data){
-            data = data.trim()
-            if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
-                loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.launchWrapperNotDownloaded'))
-            }
+            forEachGameLogLine(data, line => {
+                if(line.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
+                    loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
+                    showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.launchWrapperNotDownloaded'))
+                }
+            })
         }
 
         try {
@@ -610,7 +646,15 @@ async function dlAsync(login = true) {
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)
+            proc.stderr.on('data', tempListener)
             proc.stderr.on('data', gameErrorListener)
+
+            launchUiFallbackTimer = setTimeout(() => {
+                if(!loadCompleteHandled){
+                    loggerLaunchSuite.warn('Launch UI fallback triggered; hiding progress bar after timeout.')
+                    onLoadComplete()
+                }
+            }, LAUNCH_UI_FALLBACK_MS)
 
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
 

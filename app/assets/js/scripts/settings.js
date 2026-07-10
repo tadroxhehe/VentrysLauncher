@@ -179,7 +179,7 @@ async function initSettingsValues(skipJavaValidation = false){
  */
 function saveSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
-    Array.from(sEls).map((v, index, arr) => {
+    for(const v of sEls) {
         const cVal = v.getAttribute('cValue')
         const serverDependent = v.hasAttribute('serverDependent') // Means the first argument is the server id.
         const sFn = ConfigManager['set' + cVal]
@@ -199,6 +199,9 @@ function saveSettingsValues(){
                             sFnOpts.push(v.value.trim().split(/\s+/))
                             sFn.apply(null, sFnOpts)
                         }
+                    } else if((cVal === 'DataDirectory' || cVal === 'JavaExecutable') && (!v.value || v.value === 'null')){
+                        // Never persist EJS placeholder values from uninitialized inputs.
+                        continue
                     } else {
                         sFnOpts.push(v.value)
                         sFn.apply(null, sFnOpts)
@@ -231,7 +234,7 @@ function saveSettingsValues(){
                 }
             }
         }
-    })
+    }
 }
 
 let selectedSettingsTab = 'settingsTabAccount'

@@ -65,6 +65,23 @@ exports.getAbsoluteMaxRAM = function(_ram){
     return Math.floor((mem-(gT16 > 0 ? (Number.parseInt(gT16/8) + (16*1073741824)/4) : mem/4))/1073741824)
 }
 
+function readConfigFile(configFilePath){
+    const raw = fs.readFileSync(configFilePath, 'UTF-8').replace(/^\uFEFF/, '')
+    return JSON.parse(raw)
+}
+
+function normalizeDataDirectory(dir){
+    if(typeof dir !== 'string' || dir.length === 0 || dir === 'null'){
+        return dataPath
+    }
+    if(!path.isAbsolute(dir) || !fs.existsSync(path.join(dir, 'common'))){
+        if(fs.existsSync(path.join(dataPath, 'common'))){
+            return dataPath
+        }
+    }
+    return dir
+}
+
 function resolveSelectedRAM(ram) {
     if(ram?.recommended != null) {
         return `${ram.recommended}M`
@@ -148,7 +165,7 @@ exports.load = function(){
     if(doLoad){
         let doValidate = false
         try {
-            config = JSON.parse(fs.readFileSync(configPath, 'UTF-8'))
+            config = readConfigFile(configPath)
             doValidate = true
         } catch (err){
             logger.error(err)
@@ -160,6 +177,11 @@ exports.load = function(){
         }
         if(doValidate){
             config = validateKeySet(DEFAULT_CONFIG, config)
+            const normalizedDataDir = normalizeDataDirectory(config.settings.launcher.dataDirectory)
+            if(normalizedDataDir !== config.settings.launcher.dataDirectory){
+                logger.warn(`Fixing invalid data directory "${config.settings.launcher.dataDirectory}" -> "${normalizedDataDir}"`)
+                config.settings.launcher.dataDirectory = normalizedDataDir
+            }
             exports.save()
         }
     }
