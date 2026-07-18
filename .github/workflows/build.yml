@@ -1,6 +1,8 @@
 name: Build
 
-on: push
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   release:
@@ -10,6 +12,7 @@ jobs:
       contents: write
 
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
@@ -34,5 +37,19 @@ jobs:
       - name: Build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist
         shell: bash
+
+      - name: Upload artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ matrix.os }}
+          path: |
+            dist/*.dmg
+            dist/*.exe
+            dist/*.deb
+            dist/*.zip
+            dist/*.AppImage
+          if-no-files-found: ignore
