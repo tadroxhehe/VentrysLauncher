@@ -1,0 +1,25 @@
+diff --git a/node_modules/helios-core/dist/java/JavaGuard.js b/node_modules/helios-core/dist/java/JavaGuard.js
+index 018620e..c434bb1 100644
+--- a/node_modules/helios-core/dist/java/JavaGuard.js
++++ b/node_modules/helios-core/dist/java/JavaGuard.js
+@@ -585,10 +585,16 @@ class Win32RegistryJavaDiscoverer {
+                                         }
+                                         if (major > -1) {
+                                             javaVer.get('JavaHome', (err, res) => {
+-                                                const jHome = res.value;
+-                                                // Exclude 32bit.
+-                                                if (!jHome.includes('(x86)')) {
+-                                                    candidates.add(jHome);
++                                                // Incomplete registry entries (missing JavaHome) must be skipped.
++                                                if (!err && res != null && typeof res.value === 'string') {
++                                                    const jHome = res.value;
++                                                    // Exclude 32bit.
++                                                    if (!jHome.includes('(x86)')) {
++                                                        candidates.add(jHome);
++                                                    }
++                                                }
++                                                else if (err) {
++                                                    console.error(err);
+                                                 }
+                                                 // SUBKEY DONE
+                                                 numDone++;

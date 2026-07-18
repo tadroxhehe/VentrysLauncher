@@ -1,6 +1,6 @@
 {
   "name": "helioslauncher",
-  "version": "2.2.14",
+  "version": "2.2.15",
   "productName": "Ventrys Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -18,7 +18,8 @@
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
     "lint": "eslint .",
-    "serve:distro": "node distro-server/serve.js"
+    "serve:distro": "node distro-server/serve.js",
+    "postinstall": "patch-package"
   },
   "engines": {
     "node": "22.x.x"
@@ -44,7 +45,8 @@
     "@stylistic/eslint-plugin": "^5.6.1",
     "electron": "^39.2.7",
     "electron-builder": "^26.4.0",
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.2",
+    "patch-package": "^8.0.1"
   },
   "repository": {
     "type": "git",
